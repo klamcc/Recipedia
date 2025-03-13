@@ -1,0 +1,208 @@
+*{
+    transition: 0.2s;
+}
+body {
+    height: 100vh;
+    margin: 0;
+    font-family: "Source Sans Pro" !important;
+}
+
+#signup {
+    font-family: Helvetica
+}
+
+
+.form-box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 50vw;
+    padding: 120px;
+    background-color: white;
+    z-index: 99;
+}
+
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+
+.btn-orange {
+    background-color: #F15025 !important;
+    border: none !important;
+
+}
+
+.btn-orange:hover {
+    background-color: #d03d15 !important;
+
+}
+
+
+
+.btn-important {
+    font-weight: bold;
+    padding: 15px;
+}
+
+input {
+    padding: 10px !important
+}
+
+a{
+    color:#004AAD
+}
+
+.carousel {
+    width: 50vw;
+    height: 100%;
+}
+
+.carousel-item {
+    height: 100vh;
+    background-size: cover;
+}
+
+.container-flex {
+    height: 100vh; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.container{
+    padding:0
+}
+
+.recipe{
+    transition: 0.2s;
+    filter:brightness(0.99);
+    border-radius:10px; 
+    height:100%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.recipe img{
+    width:100%;
+    border-radius: 10px 10px 0px 0px
+}
+
+
+
+.results{
+    padding:3rem
+}
+
+.view{
+    width:100%;
+    border-color:#F15025
+}
+
+.view:hover{
+    background-color:#F15025;
+}
+
+
+
+.btn-blue:hover{
+    border-color:#004AAD;
+    background-color:#004AAD
+}
+
+
+
+.history{
+    width:40%;
+}
+
+.fa-center { line-height: inherit!important; vertical-align: middle; display: inline;}
+
+.hero{
+
+    border-radius:10px;
+    height:40%;
+    background-image: url("https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?cs=srgb&dl=pexels-ella-olsson-572949-1640773.jpg&fm=jpg");
+    background-size: cover;
+    filter: brightness(0.7);
+}
+
+
+
+.recipe:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px;
+    filter:brightness(1)
+}
+
+.navbar-brand img{
+    width:100%;
+}
+
+.navbar-brand{
+    display: flex;
+    justify-content: center;
+    width:20%;
+}
+
+.nav-item:hover{
+    font-weight: 700;
+}
+
+.nav-item{
+    font-size:1.2rem
+}
+
+.active{
+    font-weight: bold;
+}   
+
+.navbar-brand:hover{
+    transform: scale(1.05);
+}
+
+.blue{
+    color:#004AAD
+}
+
+.orange{
+    color:#F15025
+}
+
+.add:hover{
+    cursor:pointer;
+    filter:brightness(3)
+}
+
+.add{
+    z-index:2;
+    position: relative;
+}
+
+button{
+    z-index: 2;
+    position:relative
+}
+
+
+.dropdown-menu {
+    z-index: 1050 !important;
+    position: absolute !important;
+    transition:none;
+}
+
+.recipe, .col-sm {
+    overflow: visible !important;
+}
+.dropdown-center {
+    position: relative;
+}
+
+
+
