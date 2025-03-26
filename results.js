@@ -6,9 +6,11 @@ const recipes = document.querySelector('.recipes')
 const resultContainer = document.querySelector('.results')
 const load = document.querySelector('.load')
 
+
 console.log('asdasdas')
 let offset = 0
 let number = 9
+
 function fetchResults() {
 
     fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=${number}&apiKey=${apiKey}`).then(res => res.json()).then(data => {
@@ -21,6 +23,8 @@ function fetchResults() {
 }
 
 function loadRecipes(total, data) {
+
+
     let row = 0
     console.log(data)
     recipes.innerHTML = `      
@@ -56,6 +60,7 @@ function loadRecipes(total, data) {
 }
 
 function addRecipe(recipeRow, recipe) {
+    
     recipeRow[recipeRow.length - 1].innerHTML += `        
     <div class="col-sm">
       <div class="recipe bg-light">

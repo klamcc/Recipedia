@@ -28,15 +28,29 @@ submit.addEventListener('click', (e) => {
   console.log(document.getElementById('email').value )
   let email = document.getElementById('email').value 
   let password = document.getElementById('password').value
-  
+  let base = document.body.innerHTML
+  let time = 60
+
+  document.getElementById("est-container").classList.remove('d-none')
+
+
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      signup(email)
-      // Signed up 
+    .then(async (userCredential) => {
+      await signup(email)
       const user = userCredential.user;
-      window.location.href = 'login.html'
+      setInterval(()=>{
+        time -= 1    
+        document.getElementById('est').innerText = `Your account is being processed, EST: ${time} seconds`
+      },1000)
       
-      // ...
+      setTimeout(()=>{
+        window.location.href = 'login.html'
+      },60000)
+      
+
+
+      
+
     })
     .catch((error) => {
       const errorCode = error.code;

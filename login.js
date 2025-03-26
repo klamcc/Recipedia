@@ -39,6 +39,7 @@ submit.addEventListener('click', (e) => {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(error)
+    alert(error)
   });
 })
 

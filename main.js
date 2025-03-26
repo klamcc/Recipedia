@@ -1,57 +1,107 @@
 import { get } from './user.js'
+import { update } from './user.js'
 import { apiKey } from './key.js'
-const recipes = document.querySelector('.recipes')
-function fetchPopular() {
-    console.log('asdsa')
-    fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=9`).then(res => res.json()).then(data => {
+import { nav } from './nav.js'
+nav()
+document.body.innerHTML += `  <div class="hero mx-4"></div>
 
-      
-        loadRecipes(data.recipes)
-    }).catch((error) => {
-        console.log(error)
-    })
+  <div class="h-100 d-flex justify-content-between p-4 main gap-4">
+
+    <div class="recipes h-100">
+    </div>
+  <div class="d-flex flex-column h-100 main-r gap-2">
+        <div class="history d-flex flex-column ml-2 gap-2 h-50 w-100 "></div>
+        <div class="lists d-flex flex-column gap-2"></div>
+
+  </div>
+  </div>
+`
+
+let recipes = document.querySelector('.recipes')
+let history = document.querySelector('.history')
+let lists = document.querySelector('.lists')
+
+let data = await get()
+let user = data[0]
+console.log(user)
+
+
+
+
+function fetchPopular() {
+  console.log('asdsa')
+  fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3`).then(res => res.json()).then(data => {
+
+
+    loadRecipes(data.recipes)
+  }).catch((error) => {
+    console.log(error)
+  })
 }
 
+
 function loadRecipes(data) {
-    let row = 0
-    console.log(data)
-    recipes.innerHTML = `      
+  //POPULAR
+  let row = 0
+  console.log(data)
+  recipes.innerHTML = `      
     <div class="d-flex mb-4 justify-content-between">
         <h2 class="fw-bold blue">Popular Recipes</h2>
         <button class="btn btn-primary px-5 refresh btn-orange">Refresh</button>
     </div>
       <div class="flex-row row mb-4">
       </div>`
-    let recipeRow = document.querySelectorAll('.row')
+  let recipeRow = document.querySelectorAll('.row')
 
 
-    data.forEach((recipe) => {
+  data.forEach((recipe) => {
 
-        if (row < 3) {
-            addRecipe(recipeRow, recipe)
-            row += 1
-        }
-        else {
-            row = 1
-            recipes.innerHTML += `     
+    if (row < 3) {
+      addRecipe(recipeRow, recipe)
+      row += 1
+    }
+    else {
+      row = 1
+      recipes.innerHTML += `     
             <div class="row flex-row mb-4">   
             </div>`
-            recipeRow = document.querySelectorAll('.row')
-            addRecipe(recipeRow, recipe)
-        }
+      recipeRow = document.querySelectorAll('.row')
+      addRecipe(recipeRow, recipe)
+    }
 
-    })
-    let refresh = document.querySelector('.refresh')
-    refresh.addEventListener('click', () => { 
-        fetchPopular()
-    })
+  })
+  let refresh = document.querySelector('.refresh')
+  refresh.addEventListener('click', () => {
+    fetchPopular()
+  })
+
+  //HISTORY
+  history.innerHTML = '<h3 class="fw-bold">Recently Visited</h3>'
+  console.log(user.history)
+  user.history.forEach(recipe => {
+
+    history.innerHTML += `
+      <div class=" d-flex gap-2 history-item hover w-100 justify-content-between bg-light rounded">
+      <div style="background-image:url('${recipe.image}')"class="w-50 history-img rounded-start"></div>
+      <div class="w-50 p-2">
+      
+        <h5 class="fw-bold">${recipe.title}</h5>
+      </div>
+      <a href="recipe.html?id=${recipe.id}"class="stretched-link"></a>
+      </div>`
+  })
+
+  //LISTS
+  loadList()
+
 }
 
+
 function addRecipe(recipeRow, recipe) {
-  
-    recipeRow[recipeRow.length - 1].innerHTML += `        
+
+  recipeRow[recipeRow.length - 1].innerHTML += `        
     <div class="col-sm">
-      <div class="recipe bg-light">
+      <div class="recipe hover bg-light z-1">
       <img
         src="${recipe.image}"
         alt=""></img>
@@ -59,13 +109,10 @@ function addRecipe(recipeRow, recipe) {
       <div>
       <div class="d-flex justify-content-between gap-2">
         <h3 class="fw-bold d-inline">${recipe.title}</h3>
-                <div class="dropdown-center">
-            <i class="fa-solid fa-circle-plus fa-2x add " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="dropstart ">
+            <i class="fa-solid fa-circle-plus fa-2x add z-3 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false ">
             </i>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Favourites</a></li>
-                <li><a class="dropdown-item" href="#">List 1</a></li>
-                <li><a class="dropdown-item" href="#">List 2</a></li>
+            <ul class="dropdown-menu" id="${recipe.id}">
             </ul>
         </div>
         </div>
@@ -80,14 +127,62 @@ function addRecipe(recipeRow, recipe) {
     
     </div>`
 
+  
+  let dropdown = document.getElementById(recipe.id)
+  for (let list of Object.keys(user.lists)) {
+    let listEl = document.createElement('li')
+    listEl.innerHTML = `<a class="dropdown-item" id="${recipe.id}">${list}</a>`
+    console.log(listEl)
+    dropdown.appendChild(listEl)
+  }
+  document.querySelectorAll('.dropdown-item').forEach(el => {
+    
+    el.addEventListener('click', (e) => {
+      user.lists[e.target.innerHTML].push(e.target.id)
+      console.log(user.lists)
+      loadList()
+    })
+  })
+}
+
+function fetchById(id){
+  
+  return fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(res => res.json()).then(data => {
+    console.log(data)
+    return data
+  }).catch((error) => {
+    console.log(error)
+  })
+}
+
+function loadList(){
+  lists.innerHTML = '<h3 class="fw-bold">Your Lists</h3>'
+  for (let list of Object.keys(user.lists)) {
+    let listEl = document.createElement('div')
+    let listItems = document.createElement('div')
+    listEl.innerHTML = `<i class="fa-solid fa-angle-up me-3"></i><h5 class="fw-bold d-inline">${list}</h5>`
+    listEl.classList.add('w-100', 'bg-light', 'rounded', 'p-3', 'align-center', 'list')
+    listEl.appendChild(listItems)
+    listEl.addEventListener('click', () => {
+      listEl.classList.toggle('open-icon')
+      listItems.classList.toggle('open')
+    })
+    user.lists[list].forEach(id => {
+      let recipe = fetchById(id).then()
+      console.log(recipe)
+      listEl.innerHTML += `
+      <div class=" d-flex gap-2 history-item hover w-100 justify-content-between bg-light rounded">
+      <div style="background-image:url('${recipe.image}')"class="w-50 history-img rounded-start"></div>
+      <div class="w-50 p-2">
+      
+        <h5 class="fw-bold">${recipe.title}</h5>
+      </div>
+      <a href="recipe.html?id=${recipe.id}"class="stretched-link"></a>
+      </div>`
+    })
+    lists.appendChild(listEl)
+  }
+
 }
 
 fetchPopular()
-
-async function loadUser(){
-  let data = await get()
-  console.log(data[localStorage.getItem('login')])
-}
-
-
-loadUser()
