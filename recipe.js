@@ -12,7 +12,8 @@ console.log('asds')
 fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(res => res.json()).then(data => {
     console.log(data)
 
-    if (user['history'].indexOf(data) < 0) {
+    if (!user['history'].includes(data)) {
+        console.log('added history')
         updatedData[localStorage.getItem('login')]['history'].unshift(data)
         console.log(updatedData)
         update(JSON.stringify(updatedData))

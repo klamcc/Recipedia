@@ -28,24 +28,17 @@ submit.addEventListener('click', (e) => {
   console.log(document.getElementById('email').value )
   let email = document.getElementById('email').value 
   let password = document.getElementById('password').value
-  let base = document.body.innerHTML
-  let time = 60
 
-  document.getElementById("est-container").classList.remove('d-none')
+
+  
 
 
   createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       await signup(email)
       const user = userCredential.user;
-      setInterval(()=>{
-        time -= 1    
-        document.getElementById('est').innerText = `Your account is being processed, EST: ${time} seconds`
-      },1000)
-      
-      setTimeout(()=>{
-        window.location.href = 'login.html'
-      },60000)
+      alert('Your account is being processed, 1 minute is required before login.')
+      window.location.href = 'login.html'
       
 
 
@@ -56,5 +49,6 @@ submit.addEventListener('click', (e) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(error)
+      alert(error)
     });
 })

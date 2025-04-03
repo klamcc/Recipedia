@@ -1,6 +1,6 @@
-export function nav(){
-      document.body.innerHTML = 
-  `    <nav class="navbar navbar-expand-lg navbar-light justify-content-between px-4">
+export function nav() {
+  document.body.innerHTML =
+    `    <nav class="navbar navbar-expand-lg navbar-light justify-content-between px-4">
 
 
         <a class="navbar-brand" href="main.html"><img src="recipedia.png" alt=""></a>
@@ -24,23 +24,29 @@ export function nav(){
 
     </nav>`
 
-    
-
-const searchBtn = document.getElementById('search-btn')
-const search = document.getElementById('search')
-const logout = document.getElementById('logout')
 
 
-searchBtn.addEventListener('click',(e)=>{
+
+updateListeners()
+}
+
+export function updateListeners(){
+  const searchBtn = document.getElementById('search-btn')
+  const search = document.getElementById('search')
+  const logout = document.getElementById('logout')
+
+
+  searchBtn.addEventListener('click', (e) => {
     e.preventDefault()
     window.location.href = `search.html?query=${search.value}`
+    console.log('ok')
 
-})
+  })
 
-logout.addEventListener('click',(e)=>{
+  logout.addEventListener('click', (e) => {
     e.preventDefault()
     localStorage.removeItem('login')
+    window.location.href = 'login.html'
 
-})
-
+  })
 }

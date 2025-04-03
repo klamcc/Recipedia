@@ -1,17 +1,21 @@
 import { get } from './user.js'
 import { update } from './user.js'
 import { apiKey } from './key.js'
-import { nav } from './nav.js'
+import { nav,updateListeners } from './nav.js'
+
+
 nav()
+
 document.body.innerHTML += `  <div class="hero mx-4"></div>
 
-  <div class="h-100 d-flex justify-content-between p-4 main gap-4">
+  <div class="min-vh-100 d-flex justify-content-between p-4 main gap-4">
 
     <div class="recipes h-100">
     </div>
-  <div class="d-flex flex-column h-100 main-r gap-2">
-        <div class="history d-flex flex-column ml-2 gap-2 h-50 w-100 "></div>
-        <div class="lists d-flex flex-column gap-2"></div>
+  <div class="d-flex flex-column min-vh-100 main-r gap-2">
+        <div class="history d-flex flex-column ml-2 gap-2  w-100"></div>
+        
+        <div class="lists d-flex flex-column gap-2  "></div>
 
   </div>
   </div>
@@ -30,7 +34,7 @@ console.log(user)
 
 function fetchPopular() {
   console.log('asdsa')
-  fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3`).then(res => res.json()).then(data => {
+  fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=9`).then(res => res.json()).then(data => {
 
 
     loadRecipes(data.recipes)
@@ -81,7 +85,7 @@ function loadRecipes(data) {
   user.history.forEach(recipe => {
 
     history.innerHTML += `
-      <div class=" d-flex gap-2 history-item hover w-100 justify-content-between bg-light rounded">
+      <div class=" d-flex gap-2 min-15 position-relative darken w-100 justify-content-between bg-light rounded">
       <div style="background-image:url('${recipe.image}')"class="w-50 history-img rounded-start"></div>
       <div class="w-50 p-2">
       
@@ -93,6 +97,7 @@ function loadRecipes(data) {
 
   //LISTS
   loadList()
+  updateListeners()
 
 }
 
@@ -138,40 +143,54 @@ function addRecipe(recipeRow, recipe) {
   document.querySelectorAll('.dropdown-item').forEach(el => {
     
     el.addEventListener('click', (e) => {
-      user.lists[e.target.innerHTML].push(e.target.id)
+      if (!data[1][localStorage.getItem('login')].lists[e.target.innerHTML].includes(e.target.id)){
+        user.lists[e.target.innerHTML].push(e.target.id)
+              data[1][localStorage.getItem('login')].lists[e.target.innerHTML].push(e.target.id)
+      update(JSON.stringify(data[1]))
       console.log(user.lists)
+      
       loadList()
+      }
+
     })
   })
+  updateListeners()
 }
 
 function fetchById(id){
   
-  return fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(res => res.json()).then(data => {
-    console.log(data)
-    return data
-  }).catch((error) => {
-    console.log(error)
-  })
+  return 
 }
 
 function loadList(){
   lists.innerHTML = '<h3 class="fw-bold">Your Lists</h3>'
   for (let list of Object.keys(user.lists)) {
+    let listContainer = document.createElement('div')
+    listContainer.classList.add('h-100','overflow-auto')
     let listEl = document.createElement('div')
     let listItems = document.createElement('div')
-    listEl.innerHTML = `<i class="fa-solid fa-angle-up me-3"></i><h5 class="fw-bold d-inline">${list}</h5>`
+    listItems.classList.add('list-items','d-flex','flex-column','gap-2')
+    listEl.innerHTML = `<div><i class="fa-solid fa-angle-up me-3"></i><h5 class="fw-bold d-inline">${list}</h5><div>`
     listEl.classList.add('w-100', 'bg-light', 'rounded', 'p-3', 'align-center', 'list')
-    listEl.appendChild(listItems)
+    listContainer.appendChild(listEl)
+    listContainer.appendChild(listItems)
+    
     listEl.addEventListener('click', () => {
       listEl.classList.toggle('open-icon')
       listItems.classList.toggle('open')
     })
-    user.lists[list].forEach(id => {
-      let recipe = fetchById(id).then()
+    
+    user.lists[list].forEach(async(id) => {
+      let recipe
+      console.log(id)
+      await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(res => res.json()).then(data => {
+        recipe = data
+      }).catch((error) => {
+        console.log(error)
+      })
       console.log(recipe)
-      listEl.innerHTML += `
-      <div class=" d-flex gap-2 history-item hover w-100 justify-content-between bg-light rounded">
+      listItems.innerHTML += `
+      <div class=" d-flex gap-2 min-15 darken w-100 justify-content-between bg-light rounded position-relative">
       <div style="background-image:url('${recipe.image}')"class="w-50 history-img rounded-start"></div>
       <div class="w-50 p-2">
       
@@ -180,9 +199,11 @@ function loadList(){
       <a href="recipe.html?id=${recipe.id}"class="stretched-link"></a>
       </div>`
     })
-    lists.appendChild(listEl)
-  }
 
+    lists.appendChild(listContainer)
+  }
+  updateListeners()
 }
 
+updateListeners()
 fetchPopular()

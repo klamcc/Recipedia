@@ -1,5 +1,11 @@
 *{
-    transition: 0.2s;
+    transition: 0.2s;   
+}
+
+*::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 body {
     height: 100vh;
@@ -117,6 +123,8 @@ a{
 
 .history{
     width:40%;
+    height: 45vh;
+
 }
 
 .fa-center { line-height: inherit!important; vertical-align: middle; display: inline;}
@@ -194,10 +202,7 @@ a{
 
 }
 
-.history-item{
-    filter:brightness(0.99);
-    height:33%;
-}
+
 .history-img{
     background-size:cover;
 }
@@ -207,8 +212,9 @@ a{
 }
 
 .open{
-    height:50%;
-    overflow: hidden;
+    transition: 0.2s;
+    height: 100% !important;
+    overflow: auto !important;
     
 }
 
@@ -227,3 +233,19 @@ a{
 }
 
 
+.list-items{
+    height:0;
+    overflow:hidden
+}
+
+.darken:hover{
+    filter: brightness(0.9);
+}
+
+.darken-light:hover{
+    filter: brightness(0.95);
+}
+
+.min-15{
+    min-height:15vh;
+}
