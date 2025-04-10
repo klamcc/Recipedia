@@ -1,7 +1,7 @@
 import { get } from './user.js'
 import { update } from './user.js'
 import { apiKey } from './key.js'
-import { nav,updateListeners } from './nav.js'
+import { nav, updateListeners } from './nav.js'
 
 
 nav()
@@ -25,7 +25,8 @@ let recipes = document.querySelector('.recipes')
 let history = document.querySelector('.history')
 let lists = document.querySelector('.lists')
 
-let data = await get()
+let data = await get(localStorage.getItem('login'))
+
 let user = data[0]
 console.log(user)
 
@@ -34,7 +35,7 @@ console.log(user)
 
 function fetchPopular() {
   console.log('asdsa')
-  fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=9`).then(res => res.json()).then(data => {
+  fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=1`).then(res => res.json()).then(data => {
 
 
     loadRecipes(data.recipes)
@@ -132,7 +133,7 @@ function addRecipe(recipeRow, recipe) {
     
     </div>`
 
-  
+
   let dropdown = document.getElementById(recipe.id)
   for (let list of Object.keys(user.lists)) {
     let listEl = document.createElement('li')
@@ -141,15 +142,15 @@ function addRecipe(recipeRow, recipe) {
     dropdown.appendChild(listEl)
   }
   document.querySelectorAll('.dropdown-item').forEach(el => {
-    
+
     el.addEventListener('click', (e) => {
-      if (!data[1][localStorage.getItem('login')].lists[e.target.innerHTML].includes(e.target.id)){
+      if (!data[1][localStorage.getItem('login')].lists[e.target.innerHTML].includes(e.target.id)) {
         user.lists[e.target.innerHTML].push(e.target.id)
-              data[1][localStorage.getItem('login')].lists[e.target.innerHTML].push(e.target.id)
-      update(JSON.stringify(data[1]))
-      console.log(user.lists)
-      
-      loadList()
+        console.log(user.lists)
+        save()
+        loadList()
+
+
       }
 
     })
@@ -157,30 +158,29 @@ function addRecipe(recipeRow, recipe) {
   updateListeners()
 }
 
-function fetchById(id){
-  
-  return 
+function fetchById(id) {
+
+  return
 }
 
-function loadList(){
+function loadList() {
   lists.innerHTML = '<h3 class="fw-bold">Your Lists</h3>'
   for (let list of Object.keys(user.lists)) {
     let listContainer = document.createElement('div')
-    listContainer.classList.add('h-100','overflow-auto')
     let listEl = document.createElement('div')
     let listItems = document.createElement('div')
-    listItems.classList.add('list-items','d-flex','flex-column','gap-2')
+    listItems.classList.add('list-items','overflow-auto')
     listEl.innerHTML = `<div><i class="fa-solid fa-angle-up me-3"></i><h5 class="fw-bold d-inline">${list}</h5><div>`
     listEl.classList.add('w-100', 'bg-light', 'rounded', 'p-3', 'align-center', 'list')
     listContainer.appendChild(listEl)
     listContainer.appendChild(listItems)
-    
+
     listEl.addEventListener('click', () => {
       listEl.classList.toggle('open-icon')
       listItems.classList.toggle('open')
     })
-    
-    user.lists[list].forEach(async(id) => {
+
+    user.lists[list].forEach(async (id) => {
       let recipe
       console.log(id)
       await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(res => res.json()).then(data => {
@@ -190,7 +190,7 @@ function loadList(){
       })
       console.log(recipe)
       listItems.innerHTML += `
-      <div class=" d-flex gap-2 min-15 darken w-100 justify-content-between bg-light rounded position-relative">
+      <div class=" d-flex gap-2 min-15 darken w-100 justify-content-between bg-light rounded position-relative mb-2">
       <div style="background-image:url('${recipe.image}')"class="w-50 history-img rounded-start"></div>
       <div class="w-50 p-2">
       
@@ -202,8 +202,34 @@ function loadList(){
 
     lists.appendChild(listContainer)
   }
+  let addList = document.createElement('div')
+  addList.classList.add('w-100', 'bg-light', 'rounded', 'p-3', 'align-center', 'list')
+  addList.innerHTML = `<i class="fa-solid fa-plus me-3"></i><h5 class="fw-bold d-inline">Add list`
+  addList.addEventListener('click', () => {
+    let listName = prompt('Enter list name:')
+    if (listName){
+    user.lists[listName] = []
+    console.log(user)
+
+    loadList()
+    fetchPopular()
+    save()
+    }else{
+      alert('List name cannot be empty.')
+    }
+  })
+  lists.appendChild(addList)
   updateListeners()
+}
+
+function save(){
+  console.log('saved')
+  data[1][localStorage.getItem('login')] = user
+  update(JSON.stringify(data[1]))
+
+
 }
 
 updateListeners()
 fetchPopular()
+

@@ -5,7 +5,7 @@ import { get } from './user.js';
 const id = new URLSearchParams(window.location.search).get('id');
 const recipe = document.querySelector('.recipe-details')
 
-let data = await get()
+let data = await get(localStorage.getItem('login'))
 let updatedData = data[1]
 let user = data[0]
 console.log('asds')

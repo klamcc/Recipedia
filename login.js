@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-
+import { get } from "./user.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,11 +28,17 @@ submit.addEventListener('click', (e) => {
   let email = document.getElementById('email').value 
   let password = document.getElementById('password').value
   signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
+  .then(async(userCredential) => {
     // Signed in 
     const user = userCredential.user;
-    window.location.href = 'main.html'
-    localStorage.setItem('login',email)
+    let created = await get(email)
+    if (created[1][email]){
+      localStorage.setItem('login',email)
+      window.location.href = 'main.html'
+    }else{
+      alert('Your account has not finished proccessing.')
+    }
+
     // ...
   })
   .catch((error) => {

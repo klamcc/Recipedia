@@ -4,16 +4,16 @@ const gistId = '19ae58d8b99f7056155268d0b4416fd4';
 
 const octokit = new Octokit({
     // auth: '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'
-    auth: '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'
+
 })
 
 
-export async function get() {
+export async function get(user) {
     const response = await octokit.request(`GET /gists/${gistId}`, {
         gist_id: gistId,
     })
     console.log(JSON.parse(response.data.files["user-data.json"].content))
-    return [(JSON.parse(response.data.files["user-data.json"].content))[localStorage.getItem('login')], (JSON.parse(response.data.files["user-data.json"].content))]
+    return [JSON.parse(response.data.files["user-data.json"].content)[user], (JSON.parse(response.data.files["user-data.json"].content))]
 
 
 }
@@ -48,7 +48,7 @@ export async function signup(email) {
 }
 
 if (localStorage.getItem('login')) {
-    let data = await get()
+    let data = await get(localStorage.getItem('login'))
     console.log(data)
     if (data[0]) {  
         if (data[0]['history'].length > 3) {
