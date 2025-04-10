@@ -4,7 +4,7 @@ const gistId = '19ae58d8b99f7056155268d0b4416fd4';
 
 const octokit = new Octokit({
     // auth: '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'
-
+    // auth: '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'
 })
 
 
